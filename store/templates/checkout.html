@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | StyleHub</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        nav {
+            background: #111;
+            color: white;
+            padding: 20px 6%;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 35px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font: inherit;
+        }
+
+        .item {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .total {
+            font-size: 22px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 14px 20px;
+            width: 100%;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        .message {
+            padding: 12px;
+            background: #fff0f0;
+            color: #b00020;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h2>StyleHub — Checkout</h2>
+    </nav>
+
+    <div class="container">
+        <h1>Delivery Details</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <h2>Order Summary</h2>
+
+        {% for item in cart_items %}
+            <div class="item">
+                <strong>{{ item.product.name }}</strong>
+                <p>Quantity: {{ item.quantity }}</p>
+                <p>Subtotal: ₹{{ item.subtotal }}</p>
+            </div>
+        {% endfor %}
+
+        <p class="total">Total: ₹{{ total }}</p>
+
+        <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+
+            <label for="customer_name">Full Name</label>
+            <input
+                type="text"
+                id="customer_name"
+                name="customer_name"
+                maxlength="100"
+                required
+            >
+
+            <label for="phone">Phone Number</label>
+            <input
+                type="tel"
+                id="phone"
+                name="phone"
+                pattern="[0-9]{10,15}"
+                minlength="10"
+                maxlength="15"
+                required
+            >
+
+            <label for="address">Full Delivery Address</label>
+            <textarea
+                id="address"
+                name="address"
+                rows="4"
+                required
+            ></textarea>
+
+            <button type="submit">Place Order</button>
+        </form>
+    </div>
+</body>
+</html>

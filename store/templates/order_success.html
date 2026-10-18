@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Successful | StyleHub</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            text-align: center;
+            padding: 40px 15px;
+        }
+
+        .box {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 35px;
+            border-radius: 10px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 22px;
+            background: #111;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1 class="success">Order Placed Successfully!</h1>
+
+        <p>Thank you for shopping with StyleHub.</p>
+        <h3>Order Number: {{ order.id }}</h3>
+        <h3>Total Amount: ₹{{ order.total_amount }}</h3>
+        <p>Delivery Name: {{ order.customer_name }}</p>
+        <p>Delivery Address: {{ order.address }}</p>
+
+        <a href="{% url 'home' %}">Continue Shopping</a>
+    </div>
+</body>
+</html>

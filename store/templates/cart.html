@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Cart | StyleHub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        nav {
+            background: #111;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav h2 {
+            margin: 0;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .cart-container {
+            max-width: 900px;
+            margin: auto;
+            padding: 15px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
+
+        .item img {
+            width: 120px;
+            height: 140px;
+            object-fit: contain;
+        }
+
+        .details {
+            flex: 1;
+        }
+
+        .quantity {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .quantity button {
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        .remove {
+            color: #d00;
+            text-decoration: none;
+        }
+
+        .total {
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 25px 0;
+        }
+
+        .shop {
+            display: inline-block;
+            background: #111;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .item {
+                align-items: flex-start;
+                gap: 12px;
+                padding: 12px;
+            }
+
+            .item img {
+                width: 85px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <h2>StyleHub</h2>
+    <a href="{% url 'home' %}">Continue Shopping</a>
+</nav>
+
+<h1>My Shopping Cart</h1>
+
+<div class="cart-container">
+
+    {% for item in cart_items %}
+
+        <div class="item">
+
+            {% if item.product.image %}
+                <img src="{{ item.product.image.url }}"
+                     alt="{{ item.product.name }}">
+            {% else %}
+                <img src="https://placehold.co/120x140?text=No+Image"
+                     alt="No image">
+            {% endif %}
+
+            <div class="details">
+
+                <h3>{{ item.product.name }}</h3>
+
+                <p>Price: ₹{{ item.product.price }}</p>
+
+                <div class="quantity">
+
+                    <form method="POST"
+                          action="{% url 'update_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="action"
+                                value="decrease">−</button>
+                    </form>
+
+                    <span>{{ item.quantity }}</span>
+
+                    <form method="POST"
+                          action="{% url 'update_cart' item.product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="action"
+                                value="increase"
+                                {% if item.quantity >= item.product.stock %}
+                                disabled
+                                {% endif %}>+</button>
+                    </form>
+
+                </div>
+
+                <p><strong>Subtotal: ₹{{ item.subtotal }}</strong></p>
+
+                <a class="remove"
+                   href="{% url 'remove_from_cart' item.product.id %}">
+                    Remove
+                </a>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <div class="empty">
+            <h2>Your cart is empty</h2>
+            <p>Add some clothes to get started!</p>
+            <a class="shop" href="{% url 'home' %}">
+                Shop Now
+            </a>
+        </div>
+
+    {% endfor %}
+
+    {% if cart_items %}
+        <div class="total">
+            Total: ₹{{ total }}
+        </div>
+        <a class="shop" href="{% url 'checkout' %}">
+            Proceed to Checkout
+        </a>
+
+        <a class="shop" href="{% url 'home' %}">
+            Continue Shopping
+        </a>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
